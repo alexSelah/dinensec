@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>En Construcción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #555; /* Gris piedra */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background-color: #f8f9fa; /* Un gris claro para la tarjeta */
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+            max-width: 500px; /* Limitar el ancho máximo de la tarjeta */
+            width: 90%; /* Ocupar un porcentaje del ancho en pantallas más pequeñas */
+        }
+
+        .card-body {
+            padding: 2rem; /* Reducir el padding para que se vea menos grande */
+            text-align: center;
+        }
+
+        .display-1 { /* Clase de Bootstrap para texto muy grande */
+            color: #ff8c00; /* Naranja */
+            font-weight: bold;
+            word-break: break-word; /* Asegura que el texto largo se ajuste al ancho */
+        }
+
+        .lead { /* Clase de Bootstrap para texto ligeramente más grande */
+            color: #555; /* Gris piedra */
+            margin-top: 1rem; /* Reducir el margen superior */
+        }
+
+        .card-body img {
+            width: 80%; /* Reducir un poco el tamaño de la imagen dentro de la card */
+            margin-bottom: 1rem;
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Añadir una sombra suave a la imagen */
+            border-radius: 8px; /* Opcional: añadir un pequeño radio de borde a la imagen */
+        }
+
+        .progress {
+            margin-top: 1.5rem; /* Reducir el margen superior de la barra de progreso */
+            margin-bottom: 1.5rem; /* Añadir un poco de margen inferior */
+        }
+
+        .btn {
+            font-size: 0.9rem; /* Reducir un poco el tamaño de la fuente de los botones */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8"> <div class="card">
+                    <div class="card-body">
+                        <img src="images/logoG.png" alt="Logo">
+                        <h1 class="display-1">En Construcción</h1>
+                        <p class="lead">Estamos trabajando para ofrecerte algo increíble. ¡Vuelve pronto!</p>
+                        <div class="progress" style="height: 8px;"> <div class="progress-bar bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="mt-3 text-muted" style="font-size: 0.9rem;">Síguenos para estar al tanto de las novedades.</p>
+                        <div>
+                            <a href="#" class="btn btn-outline-warning btn-sm m-2"><i class="fab fa-facebook"></i> Facebook</a>
+                            <a href="#" class="btn btn-outline-warning btn-sm m-2"><i class="fab fa-twitter"></i> Twitter</a>
+                            <a href="#" class="btn btn-outline-warning btn-sm m-2"><i class="fab fa-instagram"></i> Instagram</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/your_fontawesome_kit.js" crossorigin="anonymous"></script>
+</body>
+</html>
