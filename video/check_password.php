@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     // Si alguien intenta acceder a check_password.php directamente sin enviar datos
     // Podemos redirigir a la página principal o mostrar un error genérico.
-    header('Location: index.php'); // O index.html si no renombraste
+    header('Location: index.html'); // O index.html si no renombraste
     exit; // Detener la ejecución del script
 }
 
