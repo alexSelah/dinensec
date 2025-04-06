@@ -1,0 +1,112 @@
+/* Estilos generales y fuentes */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5; /* Un gris claro suave */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    background-color: #ffffff; /* Fondo blanco */
+    padding: 40px 50px;
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    transition: transform 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-5px); /* Efecto sutil al pasar el ratón */
+}
+
+header h1 {
+    color: #2c3e50; /* Azul oscuro */
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+header p {
+    color: #555;
+    margin-bottom: 30px;
+    font-size: 0.95em;
+}
+
+/* Formulario */
+.access-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre elementos del form */
+}
+
+.access-form label {
+    display: none; /* Opcional: Ocultar la etiqueta si el placeholder es suficiente */
+}
+
+.access-form input[type="password"] {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.access-form input[type="password"]:focus {
+    border-color: #3498db; /* Azul al enfocar */
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+}
+
+.access-form button {
+    padding: 15px 20px;
+    background-color: #3498db; /* Azul */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.access-form button:hover {
+    background-color: #2980b9; /* Azul más oscuro al pasar el ratón */
+    transform: translateY(-2px); /* Ligero levantamiento */
+}
+
+.access-form button:active {
+    transform: translateY(0); /* Efecto de presionar */
+}
+
+/* Mensaje de error (si usas la redirección con ?error=1) */
+.error-message {
+    color: #e74c3c; /* Rojo para errores */
+    font-weight: bold;
+    margin-top: 15px;
+    background-color: #fdd;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e74c3c;
+}
+
+/* Pie de página */
+footer {
+    margin-top: 40px;
+    font-size: 0.8em;
+    color: #777;
+}
+
+/* Responsive básico */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 25px;
+    }
+    header h1 {
+        font-size: 1.8em;
+    }
+}

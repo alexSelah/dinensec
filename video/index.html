@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Exclusivo a Reuniones</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔑 Acceso Privado</h1>
+            <p>Introduce tu código de acceso para unirte a la reunión.</p>
+        </header>
+        <main>
+            <form action="check_password.php" method="post" class="access-form">
+                <label for="password">Código Secreto:</label>
+                <input type="password" id="password" name="password" placeholder="Escribe tu código aquí..." required>
+                <button type="submit">Entrar a la Reunión</button>
+            </form>
+            
+            <?php
+            // Pequeño truco si queremos mostrar mensajes de error en esta misma página
+            if (isset($_GET['error'])) {
+                echo '<p class="error-message">¡Código incorrecto! Inténtalo de nuevo.</p>';
+            }
+            ?>
+        </main>
+        <footer>
+            <p>&copy; <?php echo date("Y"); ?> Tu Organización Secreta 😉</p>
+        </footer>
+    </div>
+</body>
+</html>
