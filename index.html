@@ -1,96 +1,330 @@
-<?php
-// send_email.php
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinensec - Soluciones de Ciberseguridad</title>
 
-// --- Configuración ---
-$recipient_email = "info@dinensec.com"; // Email donde recibirás los mensajes
-$subject_prefix = "[Dinensec Contacto]"; // Prefijo para el asunto del email
+    <link rel="icon" type="image/png" href="images/logoP.png">
 
-// --- Procesamiento del Formulario ---
-
-// 1. Verificar si se envió el formulario usando el método POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // 2. Recoger y sanear los datos del formulario
-    // htmlspecialchars() previene ataques XSS básicos.
-    $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : '';
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $company = isset($_POST['company']) ? htmlspecialchars(trim($_POST['company'])) : ''; // Campo opcional
-    $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
-
-    // 3. Validación básica
-    $errors = [];
-    if (empty($name)) {
-        $errors[] = "El nombre es obligatorio.";
-    }
-    if (empty($email)) {
-        $errors[] = "El correo electrónico es obligatorio.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Validar formato del email
-        $errors[] = "El formato del correo electrónico no es válido.";
-    }
-    if (empty($message)) {
-        $errors[] = "El mensaje es obligatorio.";
-    }
-
-    // 4. Si no hay errores de validación, intentar enviar el email
-    if (empty($errors)) {
-        // Construir el asunto del email
-        $subject = "$subject_prefix Nuevo mensaje de $name";
-
-        // Construir el cuerpo del email
-        $body = "Has recibido un nuevo mensaje desde el formulario de contacto de Dinensec:\n\n";
-        $body .= "Nombre: " . $name . "\n";
-        $body .= "Email: " . $email . "\n";
-        if (!empty($company)) { // Incluir empresa solo si se proporcionó
-            $body .= "Empresa: " . $company . "\n";
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0; /* Light grey text */
+            overflow-x: hidden; /* Prevent horizontal scrollbar caused by animations */
         }
-        $body .= "Mensaje:\n" . $message . "\n";
-
-        // Construir las cabeceras del email
-        // Es crucial sanear $email antes de usarlo en cabeceras para evitar Email Header Injection
-        $sanitized_email = filter_var($email, FILTER_SANITIZE_EMAIL);
-        if ($sanitized_email === $email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $headers = "From: " . $name . " <" . $sanitized_email . ">\r\n";
-            $headers .= "Reply-To: " . $sanitized_email . "\r\n";
-            $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-            $headers .= "X-Mailer: PHP/" . phpversion();
-        } else {
-            // Si el email no es válido después de sanear, no se puede usar en cabeceras.
-            // Podrías poner un email por defecto o manejar el error.
-            // Por seguridad, si el email no es válido, no enviamos o usamos un 'From' genérico.
-            // Aquí optamos por no enviar y redirigir con error.
-            header("Location: index.html?status=error_invalid_email#contacto");
-            exit;
-            // Alternativa: Usar un 'From' genérico (menos ideal para responder)
-            // $headers = "From: noreply@dinensec.com\r\n";
-            // $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-            // $headers .= "X-Mailer: PHP/" . phpversion();
+        /* Custom color variable for ochre yellow */
+        :root {
+            --ochre-yellow: #dbb302;
+        }
+        .text-ochre {
+            color: var(--ochre-yellow);
+        }
+        .bg-ochre {
+            background-color: var(--ochre-yellow);
+        }
+        .border-ochre {
+            border-color: var(--ochre-yellow);
         }
 
-
-        // Enviar el email usando la función mail() de PHP
-        // ¡¡¡ ADVERTENCIA: mail() puede no ser fiable en todos los hostings !!!
-        if (mail($recipient_email, $subject, $body, $headers)) {
-            // Éxito: Redirigir a la página de origen con parámetro de éxito
-            header("Location: index.html?status=success#contacto");
-            exit;
-        } else {
-            // Error al enviar: Redirigir con parámetro de error
-            header("Location: index.html?status=error_send#contacto");
-            exit;
+        /* Style for the image logo */
+        .logo-image {
+             /* Apply a subtle glow effect using the ochre color */
+            filter: drop-shadow(0 0 10px rgba(219, 179, 2, 0.3));
         }
 
-    } else {
-        // Errores de validación: Redirigir con parámetro de error
-        // Podrías pasar los errores específicos si quisieras mostrarlos,
-        // pero por simplicidad, solo indicamos un error general de validación.
-        header("Location: index.html?status=error_validation#contacto");
-        exit;
-    }
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
 
-} else {
-    // Si alguien intenta acceder al script directamente sin método POST
-    echo "Acceso no permitido.";
-    exit;
-}
-?>
+        /* Section padding */
+        section {
+            padding: 6rem 1rem; /* Generous padding for sections */
+        }
+
+        /* Form input styling */
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            background-color: #333333; /* Darker input background */
+            border: 1px solid #555555; /* Grey border */
+            color: #e0e0e0; /* Light text */
+            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.75rem 1rem; /* p-3 */
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--ochre-yellow); /* Highlight border on focus */
+        }
+        label {
+            color: #cccccc; /* Lighter grey for labels */
+        }
+
+        /* Animation styles */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px); /* Start slightly lower */
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Service card height consistency */
+        .service-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Make cards fill grid cell height */
+        }
+        .service-card p {
+           flex-grow: 1; /* Allow paragraph to take available space */
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <section id="inicio" class="min-h-screen flex flex-col items-center justify-center text-center bg-gradient-to-b from-[#1a1a1a] to-[#2a2a2a]">
+        <div class="max-w-4xl mx-auto px-4">
+            <img src="images/logoG.png"
+                 alt="Logotipo Dinensec Security Solutions"
+                 class="block mx-auto mb-8 w-3/4 max-w-md rounded-lg logo-image"
+                 onerror="this.onerror=null; this.src='https://placehold.co/448x179/1a1a1a/dbb302?text=Dinensec+Logo';">
+                 <h1 class="text-4xl md:text-5xl text-white font-bold mb-4">
+                Dinensec Security Solutions
+            </h1>
+
+            <p class="text-xl md:text-2xl text-gray-300 mb-8">
+                Tu socio estratégico en Ciberseguridad y Servicios TI en Europa. Protegemos tu negocio, aseguramos tu futuro.
+            </p>
+            <a href="#importancia" class="bg-ochre text-black font-bold py-3 px-8 rounded-lg hover:bg-yellow-600 transition duration-300 text-lg">
+                Descubre Por Qué
+            </a>
+        </div>
+    </section>
+
+    <section id="importancia" class="bg-[#2a2a2a] scroll-animate">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+                La <span class="text-ochre">Ciberseguridad</span>: Crucial para Pymes y Autónomos
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-ochre">¿Por qué es vital protegerse?</h3>
+                    <p class="mb-4 text-gray-300">
+                        En la era digital, ningún negocio es demasiado pequeño para ser un objetivo. Los ciberataques a pymes y autónomos están en aumento, causando pérdidas económicas, daño reputacional e interrupción del negocio.
+                    </p>
+                    <p class="text-gray-300">
+                        Ignorar la ciberseguridad no es una opción. Es una inversión esencial para la continuidad y el crecimiento de tu actividad.
+                    </p>
+                </div>
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-4 text-center text-ochre">Impacto Real</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300">
+                        <li><span class="font-bold">Coste Medio:</span> Un ciberataque puede costar a una pyme miles de euros, a menudo superando los 50.000€.</li>
+                        <li><span class="font-bold">Frecuencia:</span> Se estima que más del 40% de los ciberataques se dirigen a pequeñas empresas.</li>
+                        <li><span class="font-bold">Recuperación:</span> Cerca del 60% de las pymes que sufren un ataque grave cierran en los siguientes 6 meses.</li>
+                        <li><span class="font-bold">Vulnerabilidad:</span> Muchos autónomos y pymes carecen de planes básicos de seguridad.</li>
+                    </ul>
+                    <p class="text-sm text-gray-500 mt-4 text-center italic">(* Estos datos son ilustrativos, es posible que en algunas empresas sea mayor el impacto y que en otras nunca puedan ocurrir.)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="bg-[#1a1a1a] scroll-animate">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+             <h2 class="text-3xl md:text-4xl font-bold mb-12">
+                Nuestras <span class="text-ochre">Soluciones</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 text-left">
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card relative border-2 border-ochre lg:col-span-2">
+                    <span class="absolute top-0 right-0 bg-ochre text-black text-xs font-bold px-2 py-1 rounded-bl-lg">¡Estrella!</span>
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Concienciación en Ciberseguridad</h3>
+                    <p class="text-gray-300 text-sm pr-10">
+                        Tu equipo es el eslabón más fuerte... o el más débil. Convertimos a tus empleados en un <span class="font-semibold text-ochre">'cortafuegos humano'</span> mediante formación práctica y amena, directrices claras y consultoría continua para crear hábitos seguros. ¡La mejor defensa empieza por las personas!
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Análisis de Vulnerabilidades</h3>
+                    <p class="text-gray-300 text-sm">
+                        Detectamos las grietas en tu armadura digital antes que los 'malos'. Es como tener un detective privado que revisa puertas y ventanas de tu negocio online para asegurarse de que nadie indeseado pueda colarse y causar estragos. ¡Anticípate!
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Análisis de Riesgos Empresariales</h3>
+                    <p class="text-gray-300 text-sm">
+                        ¿Qué pasaría si...? Analizamos los posibles 'desastres' digitales (desde un hackeo hasta un fallo de sistema) y te decimos cómo te afectarían y, lo más importante, cómo prepararte para que el susto sea menor (o inexistente). Dormirás más tranquilo.
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Continuidad de Negocio</h3>
+                    <p class="text-gray-300 text-sm">
+                        Incluso si ocurre un 'terremoto' digital, tu negocio no tiene por qué detenerse. Creamos el plan B (y C) para que puedas seguir operando, facturando y atendiendo clientes pase lo que pase. ¡Que nada te pare!
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Securización de Redes y Sistemas</h3>
+                    <p class="text-gray-300 text-sm">
+                        Blindamos tus conexiones y ordenadores. Configuramos tus redes Wi-Fi, servidores y equipos para que sean fortalezas digitales, no puertas abiertas. Para que tú y tus empleados podáis navegar y trabajar con total tranquilidad.
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Bastionado de Sistemas (Hardening)</h3>
+                    <p class="text-gray-300 text-sm">
+                        Convertimos tus sistemas operativos y aplicaciones en auténticos tanques. Eliminamos lo innecesario, reforzamos la configuración por defecto y cerramos cualquier agujero para minimizar la superficie de ataque. ¡Máxima resistencia!
+                    </p>
+                </div>
+
+                <div class="bg-[#333333] p-6 rounded-lg shadow-lg service-card">
+                    <h3 class="text-xl font-bold mb-3 text-ochre">Configuración de Seguridad Integral</h3>
+                    <p class="text-gray-300 text-sm">
+                        Desde tu router hasta los móviles de empresa, pasando por la nube y el software que usas. Nos aseguramos de que cada pieza de tu puzzle tecnológico esté configurada para máxima seguridad, cumpliendo normativas y buenas prácticas. ¡Todo bajo control!
+                    </p>
+                </div>
+            </div>
+
+             <a href="#contacto" class="bg-ochre text-black font-bold py-3 px-8 rounded-lg hover:bg-yellow-600 transition duration-300 text-lg">
+                Contacta con Nosotros
+            </a>
+        </div>
+    </section>
+
+    <section id="contacto" class="bg-[#2a2a2a] scroll-animate">
+        <div class="max-w-2xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+                Hablemos de tu <span class="text-ochre">Seguridad</span>
+            </h2>
+            <p class="text-center text-lg text-gray-300 mb-8">
+                ¿Listo para proteger tu negocio? Completa el formulario y nos pondremos en contacto contigo.
+            </p>
+
+            <div id="form-status-message" class="mb-4 text-center text-sm font-medium">
+                </div>
+
+            <form action="send_email.php" method="POST" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium mb-1">Nombre</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium mb-1">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                 <div>
+                    <label for="company" class="block text-sm font-medium mb-1">Empresa (Opcional)</label>
+                    <input type="text" id="company" name="company">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-medium mb-1">Mensaje</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="bg-ochre text-black font-bold py-3 px-10 rounded-lg hover:bg-yellow-600 transition duration-300 text-lg">
+                        Enviar Mensaje
+                    </button>
+                </div>
+            </form>
+             <p class="text-center text-gray-400 mt-8 text-sm">
+                También puedes contactarnos directamente en <a href="mailto:info@dinensec.com" class="text-ochre hover:underline">info@dinensec.com</a>
+            </p>
+        </div>
+    </section>
+
+    <footer class="bg-[#1a1a1a] py-6 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="text-gray-500">&copy; 2024 Dinensec. Todos los derechos reservados.</p>
+             <p class="text-sm text-gray-600 mt-2">Protegiendo negocios en toda Europa.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Animaciones de Scroll ---
+        const animatedSections = document.querySelectorAll('.scroll-animate');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Animar solo una vez
+                }
+            });
+        }, { threshold: 0.1 });
+
+        animatedSections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // --- Manejo de Mensajes de Estado del Formulario ---
+        document.addEventListener('DOMContentLoaded', () => { // Asegura que el DOM esté cargado
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            const messageDiv = document.getElementById('form-status-message');
+
+            if (status && messageDiv) {
+                let message = '';
+                let messageClass = '';
+
+                switch (status) {
+                    case 'success':
+                        message = '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.';
+                        messageClass = 'text-green-500'; // Verde para éxito
+                        break;
+                    case 'error_send':
+                        message = 'Error: No se pudo enviar el mensaje. Inténtalo de nuevo más tarde o contáctanos directamente.';
+                        messageClass = 'text-red-500'; // Rojo para error
+                        break;
+                    case 'error_validation':
+                        message = 'Error: Revisa los campos del formulario. Asegúrate de que el email es válido y todos los campos obligatorios están completos.';
+                        messageClass = 'text-red-500';
+                        break;
+                    case 'error_invalid_email':
+                        message = 'Error: La dirección de correo electrónico proporcionada no es válida o no se pudo procesar.';
+                        messageClass = 'text-red-500';
+                        break;
+                    default:
+                        // Considerar cualquier otro 'status' que empiece con 'error_' como un error genérico
+                        if (status.startsWith('error')) {
+                             message = 'Error: Ocurrió un problema inesperado al procesar tu solicitud. Por favor, inténtalo de nuevo.';
+                             messageClass = 'text-red-500';
+                        }
+                        break;
+                }
+
+                if (message) {
+                    messageDiv.textContent = message;
+                    messageDiv.className = `mb-4 text-center text-sm font-medium ${messageClass}`; // Reemplaza clases existentes
+                }
+
+                // Limpiar el parámetro 'status' de la URL para que no se muestre de nuevo al recargar
+                // Se usa una pequeña demora para asegurar que todo se renderice antes de cambiar la URL
+                setTimeout(() => {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('status');
+                    window.history.replaceState(null, null, url.pathname + url.hash);
+                 }, 100); // 100ms de demora
+            }
+        });
+
+    </script>
+
+</body>
+</html>
